@@ -13,6 +13,60 @@ body {
   font-family: Arial, sans-serif;
 }
 
+/* ===== DESKTOP ICON ===== */
+.desktop-icon {
+  position:absolute;
+  left:100px; top:30px;
+  display:flex; flex-direction:column; align-items:center;
+  gap:4px; cursor:pointer; padding:6px 8px; border-radius:3px;
+  width:74px;
+}
+.desktop-icon:hover { background:rgba(255,255,255,0.2); }
+.desktop-icon.selected { background:rgba(49,106,197,0.7); outline:1px dotted #fff; }
+.di-icon { font-size:36px; line-height:1; filter:drop-shadow(1px 1px 2px rgba(0,0,0,0.6)); }
+.di-label {
+  color:#fff; font-size:11px; font-family:Arial;
+  text-align:center; text-shadow:1px 1px 2px rgba(0,0,0,0.9);
+  word-break:break-word; line-height:1.3;
+}
+
+/* ===== WINDOWS MEDIA PLAYER ===== */
+.wmp-menu {
+  background:#1a1a1a; border-bottom:1px solid #444;
+  padding:1px 4px; display:flex; flex-shrink:0;
+}
+.wmp-menu span {
+  padding:2px 8px; font-size:11px; font-family:Arial;
+  cursor:default; color:#ddd;
+}
+.wmp-menu span:hover { background:#444; color:#fff; }
+.wmp-body {
+  flex:1; background:#000; overflow:hidden;
+}
+.wmp-controls {
+  background:linear-gradient(to bottom,#2a2a2a,#1a1a1a);
+  border-top:1px solid #555;
+  padding:4px 6px; flex-shrink:0;
+}
+.wmp-seek-bar {
+  height:6px; background:#111; border:1px solid #555;
+  border-radius:3px; margin-bottom:5px; position:relative; cursor:pointer;
+}
+.wmp-seek-fill {
+  height:100%; background:linear-gradient(to right,#1a7fd4,#4fb0f0);
+  border-radius:3px; width:0%; pointer-events:none;
+}
+.wmp-btns { display:flex; align-items:center; gap:3px; }
+.wmp-cb {
+  width:26px; height:24px; background:#333; border:1px solid #555;
+  border-radius:3px; cursor:pointer; color:#ddd; font-size:12px;
+  display:flex; align-items:center; justify-content:center;
+}
+.wmp-cb:hover { background:#444; color:#fff; }
+.wmp-sep { width:1px; height:20px; background:#555; margin:0 3px; }
+.wmp-vol { width:70px; height:6px; cursor:pointer; accent-color:#1a7fd4; }
+.wmp-time { margin-left:auto; color:#aaa; font-size:11px; font-family:"Courier New",monospace; }
+
 /* ===== XP LEFT SIDEBAR (from the scene) ===== */
 .xp-sidebar {
   position:absolute; left:0; top:0; bottom:28px;
@@ -259,6 +313,54 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:10px; }
 </head>
 <body>
 
+<!-- ===== DESKTOP ICON ===== -->
+<div class="desktop-icon" id="barbie-icon" ondblclick="openVideo()">
+  <div class="di-icon">🎬</div>
+  <div class="di-label">Barbie.mp4</div>
+</div>
+
+<!-- ===== WINDOWS MEDIA PLAYER WINDOW ===== -->
+<div class="xp-win" id="vid-win" style="width:640px;height:520px;top:60px;left:200px;z-index:30;display:none;">
+  <div class="xp-tb" id="vid-tb">
+    <span class="xp-tb-icon">▶</span>
+    <span class="xp-tb-title">Barbie.mp4 - Windows Media Player</span>
+    <div class="xp-tb-btns">
+      <div class="xp-wb mn" onclick="minWin('vid-win','vid-task')">&#8212;</div>
+      <div class="xp-wb mx">▭</div>
+      <div class="xp-wb cl" onclick="closeWin('vid-win','vid-task')">✕</div>
+    </div>
+  </div>
+  <!-- WMP Menu -->
+  <div class="wmp-menu">
+    <span>File</span><span>View</span><span>Play</span><span>Tools</span><span>Help</span>
+  </div>
+  <!-- Video area -->
+  <div class="wmp-body">
+    <video id="vid-player" controls style="width:100%;height:100%;background:#000;display:block;">
+      <source src="Barbie.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  <!-- WMP Controls bar -->
+  <div class="wmp-controls">
+    <div class="wmp-seek-bar">
+      <div class="wmp-seek-fill" id="seek-fill"></div>
+    </div>
+    <div class="wmp-btns">
+      <div class="wmp-cb" onclick="document.getElementById('vid-player').currentTime=0">⏮</div>
+      <div class="wmp-cb" onclick="document.getElementById('vid-player').currentTime-=10">⏪</div>
+      <div class="wmp-cb" id="play-pause-btn" onclick="togglePlay()">▶</div>
+      <div class="wmp-cb" onclick="document.getElementById('vid-player').currentTime+=10">⏩</div>
+      <div class="wmp-cb" onclick="document.getElementById('vid-player').currentTime=document.getElementById('vid-player').duration">⏭</div>
+      <div class="wmp-sep"></div>
+      <div class="wmp-cb" onclick="toggleMute()">🔊</div>
+      <input type="range" class="wmp-vol" min="0" max="1" step="0.05" value="1"
+        oninput="document.getElementById('vid-player').volume=this.value">
+      <div class="wmp-time" id="wmp-time">0:00 / 0:00</div>
+    </div>
+  </div>
+</div>
+
 <!-- XP Desktop sidebar -->
 <div class="xp-sidebar">
   <div class="sb-grid">
@@ -318,7 +420,7 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:10px; }
       <div class="cl-h1">frozen barbie looking for ken</div>
       <hr class="cl-hr">
       <div class="cl-meta">
-        <strong>Reply to:</strong> <a href="#">frozenbarbie@hotmail.web</a><br>
+        <strong>Reply to:</strong> <a href="#"><span class="__cf_email__" data-cfemail="4b2d3924312e25292a3929222e0b23243f262a2227653c2e29">[email&#160;protected]</span></a><br>
         <strong>Date:</strong> 2006-11-25, 8:27PM ET
       </div>
       <div class="cl-body">
@@ -408,10 +510,13 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:10px; }
   <button class="tb-btn" id="oe-task" style="display:none;" onclick="restoreWin('oe-win','oe-task')">
     ✉ New Message
   </button>
+  <button class="tb-btn" id="vid-task" style="display:none;" onclick="restoreWin('vid-win','vid-task')">
+    ▶ Barbie.mp4 - Windows Media Player
+  </button>
   <div class="tb-clock" id="clock">8:27 PM</div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 let zTop = 10;
 function topZ() { return ++zTop; }
 
@@ -438,9 +543,10 @@ function makeDraggable(win, tb) {
 
 makeDraggable(document.getElementById('ie-win'), document.getElementById('ie-tb'));
 makeDraggable(document.getElementById('oe-win'), document.getElementById('oe-tb'));
+makeDraggable(document.getElementById('vid-win'), document.getElementById('vid-tb'));
 
 // Bring to front on click
-['ie-win','oe-win'].forEach(id => {
+['ie-win','oe-win','vid-win'].forEach(id => {
   document.getElementById(id).addEventListener('mousedown', function() {
     this.style.zIndex = topZ();
   });
@@ -468,6 +574,66 @@ function openOE() {
   document.getElementById('oe-task').style.display = 'flex';
 }
 
+function openVideo() {
+  const vw = document.getElementById('vid-win');
+  const vt = document.getElementById('vid-task');
+  vw.style.display = 'flex';
+  vw.style.zIndex = topZ();
+  vt.style.display = 'flex';
+  vt.classList.add('active');
+  const vid = document.getElementById('vid-player');
+  vid.play().catch(()=>{});
+}
+
+function togglePlay() {
+  const vid = document.getElementById('vid-player');
+  const btn = document.getElementById('play-pause-btn');
+  if (vid.paused) { vid.play(); btn.textContent = '⏸'; }
+  else { vid.pause(); btn.textContent = '▶'; }
+}
+
+function toggleMute() {
+  const vid = document.getElementById('vid-player');
+  vid.muted = !vid.muted;
+}
+
+// Seek bar + time update
+document.addEventListener('DOMContentLoaded', function() {
+  const vid = document.getElementById('vid-player');
+  const fill = document.getElementById('seek-fill');
+  const timeEl = document.getElementById('wmp-time');
+  const btn = document.getElementById('play-pause-btn');
+  const bar = document.querySelector('.wmp-seek-bar');
+
+  function fmt(s) {
+    s = Math.floor(s || 0);
+    const m = Math.floor(s/60), sec = s%60;
+    return m+':'+(sec<10?'0':'')+sec;
+  }
+
+  vid.addEventListener('timeupdate', () => {
+    if (vid.duration) {
+      fill.style.width = (vid.currentTime/vid.duration*100)+'%';
+      timeEl.textContent = fmt(vid.currentTime)+' / '+fmt(vid.duration);
+    }
+  });
+
+  vid.addEventListener('play', () => { btn.textContent = '⏸'; });
+  vid.addEventListener('pause', () => { btn.textContent = '▶'; });
+  vid.addEventListener('ended', () => { btn.textContent = '▶'; fill.style.width='100%'; });
+
+  bar.addEventListener('click', e => {
+    if (!vid.duration) return;
+    const rect = bar.getBoundingClientRect();
+    vid.currentTime = ((e.clientX - rect.left) / rect.width) * vid.duration;
+  });
+
+  // Desktop icon single click = select
+  document.getElementById('barbie-icon').addEventListener('click', function() {
+    this.classList.toggle('selected');
+  });
+});
+
 window.onload = function() {
   // Scene starts with OE open
   openOE();
@@ -476,13 +642,4 @@ window.onload = function() {
   function tick() {
     const d = new Date();
     let h = d.getHours(), m = d.getMinutes();
-    const ap = h >= 12 ? 'PM' : 'AM';
-    h = h % 12 || 12;
-    document.getElementById('clock').textContent = h + ':' + String(m).padStart(2,'0') + ' ' + ap;
-  }
-  tick();
-  setInterval(tick, 30000);
-};
-</script>
-</body>
-</html>
+    const ap = h >= 12 ?
