@@ -438,6 +438,18 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   <div class="di-label">Craigslist</div>
 </div>
 
+<!-- me.txt icon -->
+<div class="desk-icon" id="icon-metxt" style="left:20px;top:320px;">
+  <div class="di-img">📄</div>
+  <div class="di-label">me.txt</div>
+</div>
+
+<!-- me.txt icon -->
+<div class="desk-icon" id="icon-metxt" style="left:20px;top:320px;">
+  <div class="di-img">📄</div>
+  <div class="di-label">me.txt</div>
+</div>
+
 <!-- ============================================================
      IE WINDOW (Craigslist)
      ============================================================ -->
@@ -479,7 +491,7 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
       <div class="cl-h1">frozen barbie looking for ken</div>
       <hr class="cl-hr">
       <div class="cl-meta">
-        <strong>Reply to:</strong> <a href="#">frozenbarbie@hotmail.web</a><br>
+        <strong>Reply to:</strong> <a href="#"><span class="__cf_email__" data-cfemail="2b4d5944514e45494a5949424e6b43445f464a4247055c4e49">[email&#160;protected]</span></a><br>
         <strong>Date:</strong> 2006-11-25, 8:27PM ET
       </div>
       <div class="cl-body">
@@ -621,6 +633,64 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 </div>
 
 <!-- ============================================================
+     NOTEPAD WINDOW (me.txt)
+     ============================================================ -->
+<div class="xp-win" id="txt-win" style="width:400px;height:300px;top:100px;left:180px;z-index:25;display:none;">
+  <div class="xp-tb" id="txt-tb">
+    <span class="xp-tb-icon">📄</span>
+    <span class="xp-tb-title">me.txt - Notepad</span>
+    <div class="xp-tb-btns">
+      <div class="xwb mn" onclick="minWin('txt-win','txt-task')">&#8212;</div>
+      <div class="xwb mx">▭</div>
+      <div class="xwb cl" onclick="closeWin('txt-win','txt-task')">✕</div>
+    </div>
+  </div>
+  <div class="ie-menu">
+    <span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span>
+  </div>
+  <div class="xp-body" style="background:#fff;">
+    <textarea readonly style="
+      flex:1; width:100%; height:100%; border:none; outline:none; resize:none;
+      font-family:'Courier New',monospace; font-size:13px;
+      padding:6px 8px; background:#fff; color:#000; line-height:1.6;
+    ">hxnted
+
+video editing/social media management
+
+all videos in edits folder belong to the editors responsible
+
+website made by hxnted</textarea>
+  </div>
+</div>
+
+<!-- ============================================================
+     NOTEPAD WINDOW (me.txt)
+     ============================================================ -->
+<div class="xp-win" id="txt-win" style="width:420px;height:280px;top:100px;left:180px;z-index:25;display:none;">
+  <div class="xp-tb" id="txt-tb">
+    <span class="xp-tb-icon">📄</span>
+    <span class="xp-tb-title">me.txt - Notepad</span>
+    <div class="xp-tb-btns">
+      <div class="xwb mn" onclick="minWin('txt-win','txt-task')">&#8212;</div>
+      <div class="xwb mx">▭</div>
+      <div class="xwb cl" onclick="closeWin('txt-win','txt-task')">✕</div>
+    </div>
+  </div>
+  <div class="ie-menu">
+    <span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span>
+  </div>
+  <div class="xp-body">
+    <textarea readonly style="flex:1;width:100%;height:100%;border:none;outline:none;resize:none;font-family:'Courier New',monospace;font-size:13px;padding:6px 8px;background:#fff;color:#000;line-height:1.7;">hxnted
+
+video editing/social media management
+
+all videos in edits folder belong to the editors responsible
+
+website made by hxnted</textarea>
+  </div>
+</div>
+
+<!-- ============================================================
      TASKBAR
      ============================================================ -->
 <div id="taskbar">
@@ -629,11 +699,13 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   <button class="tb-btn on"   id="ie-task"    onclick="restoreWin('ie-win','ie-task')">🌐 miami &gt; missed connections</button>
   <button class="tb-btn"      id="oe-task"    onclick="restoreWin('oe-win','oe-task')"    style="display:none;">✉ New Message</button>
   <button class="tb-btn"      id="edits-task" onclick="restoreWin('edits-win','edits-task')" style="display:none;">📁 edits</button>
-  <button class="tb-btn"      id="vid-task"   onclick="restoreWin('vid-win','vid-task')"  style="display:none;">▶ Media Player</button>
+  <button class="tb-btn"      id="vid-task"   onclick="restoreWin('vid-win','vid-task')"   style="display:none;">▶ Media Player</button>
+  <button class="tb-btn"      id="txt-task"   onclick="restoreWin('txt-win','txt-task')"   style="display:none;">📄 me.txt - Notepad</button>
+  <button class="tb-btn"      id="txt-task"   onclick="restoreWin('txt-win','txt-task')"  style="display:none;">📄 me.txt - Notepad</button>
   <div class="tb-clock" id="tb-clock">8:27 PM</div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ============================================================
    WINDOW MANAGER
    ============================================================ */
@@ -660,7 +732,7 @@ function makeDraggable(win, titlebar) {
   document.addEventListener('mouseup', function() { dragging = false; });
 }
 
-['ie','oe','vid','edits'].forEach(function(p) {
+['ie','oe','vid','edits','txt'].forEach(function(p) {
   var w = document.getElementById(p+'-win');
   var t = document.getElementById(p+'-tb');
   if (w && t) {
@@ -800,6 +872,16 @@ makeDesktopIcon(document.getElementById('icon-craigslist'), function() {
   restoreWin('ie-win','ie-task');
 });
 
+makeDesktopIcon(document.getElementById('icon-metxt'), function() {
+  document.getElementById('txt-task').style.display = 'flex';
+  restoreWin('txt-win','txt-task');
+});
+
+makeDesktopIcon(document.getElementById('icon-metxt'), function() {
+  document.getElementById('txt-task').style.display = 'flex';
+  restoreWin('txt-win','txt-task');
+});
+
 /* ============================================================
    EDITS FOLDER — populate file icons, double-click to play
    ============================================================ */
@@ -891,12 +973,4 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 30000);
 
-/* ============================================================
-   STARTUP
-   ============================================================ */
-window.addEventListener('load', function() {
-  openOE();
-});
-</script>
-</body>
-</html>
+/* ====================
