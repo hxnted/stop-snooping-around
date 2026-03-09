@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dexter - Craigslist Scene</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+
+body {
+  width:100vw; height:100vh; overflow:hidden;
+  background: #245EDC;
+  background-image: radial-gradient(ellipse 80% 55% at 50% 115%, #1a7a1a 0%, #156015 40%, #245EDC 65%);
+  font-family: Arial, sans-serif;
+}
+
+/* ===== XP LEFT SIDEBAR (from the scene) ===== */
+.xp-sidebar {
+  position:absolute; left:0; top:0; bottom:28px;
+  width:88px;
+  background: linear-gradient(to bottom, #1a3ea8, #152e8e);
+  border-right:2px solid #0f2070;
+  display:flex; flex-direction:column; align-items:center;
+  padding-top:16px; gap:8px; z-index:1;
+}
+.sb-grid {
+  display:grid; grid-template-columns:repeat(4,7px); grid-template-rows:repeat(4,7px); gap:1px;
+}
+.sb-grid .p { background:#5577cc; } .sb-grid .d { background:#2a3d88; }
+.sb-label { color:#7788cc; font-size:11px; font-family:Arial; margin-top:3px; }
+.sb-pro { position:absolute; bottom:8px; color:#556699; font-size:10px; font-family:Arial; }
+
+/* ===== XP WINDOW ===== */
+.xp-win {
+  position:absolute;
+  display:flex; flex-direction:column;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.6);
+  border:1px solid #08288a;
+}
+
+.xp-tb {
+  height:28px; flex-shrink:0;
+  background:linear-gradient(to right, #082888 0%, #1a55d8 30%, #3068e0 50%, #1a55d8 70%, #082888 100%);
+  display:flex; align-items:center; padding:0 3px; gap:4px;
+  cursor:move;
+}
+.xp-tb-icon { font-size:14px; flex-shrink:0; }
+.xp-tb-title {
+  flex:1; color:#fff; font-size:12px; font-weight:bold;
+  font-family:"Trebuchet MS",Arial,sans-serif;
+  text-shadow:1px 1px 2px rgba(0,0,0,0.6);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.xp-tb-btns { display:flex; gap:2px; flex-shrink:0; }
+.xp-wb {
+  width:21px; height:21px; border-radius:3px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:bold; color:#fff;
+  border:1px solid rgba(0,0,0,0.4);
+  text-shadow:0 1px 1px rgba(0,0,0,0.5);
+}
+.xp-wb.mn { background:linear-gradient(to bottom,#62a8f0,#3a74d0); }
+.xp-wb.mx { background:linear-gradient(to bottom,#62a8f0,#3a74d0); }
+.xp-wb.cl { background:linear-gradient(to bottom,#f06060,#c82020); }
+.xp-wb.mn:hover { background:linear-gradient(to bottom,#80c0ff,#5090e8); }
+.xp-wb.cl:hover { background:linear-gradient(to bottom,#ff8888,#e03030); }
+
+.xp-body { flex:1; overflow:auto; background:#fff; }
+
+/* ===== IE WINDOW INNER ===== */
+.ie-menubar {
+  background:#ece9d8; border-bottom:1px solid #aca899;
+  padding:1px 4px; display:flex; flex-shrink:0;
+}
+.ie-menubar span {
+  padding:2px 8px; font-size:12px; font-family:Arial; cursor:default; color:#000;
+}
+.ie-menubar span:hover { background:#316ac5; color:#fff; }
+
+.ie-nav {
+  background:#ece9d8; border-bottom:1px solid #aca899;
+  padding:2px 4px; display:flex; align-items:center; gap:2px; flex-shrink:0;
+}
+.ie-nb {
+  padding:2px 7px; font-size:11px; font-family:Arial;
+  background:#ece9d8; border:1px solid transparent;
+  cursor:pointer; color:#000; border-radius:2px;
+  display:flex; align-items:center; gap:2px;
+}
+.ie-nb:hover { border-color:#848484; background:#dce8ff; }
+.ie-nb.dis { color:#aaa; cursor:default; }
+.ie-nb.dis:hover { border-color:transparent; background:#ece9d8; }
+.ie-sep { width:1px; height:20px; background:#aca899; margin:0 2px; }
+
+.ie-addr {
+  background:#ece9d8; border-bottom:2px solid #aca899;
+  padding:2px 4px; display:flex; align-items:center; gap:4px; flex-shrink:0;
+}
+.ie-al { font-size:12px; font-family:Arial; color:#000; }
+.ie-ai {
+  flex:1; height:22px; border:2px inset #888;
+  background:#fff; padding:0 4px;
+  font-size:12px; font-family:Arial; outline:none; color:#00008b;
+}
+.ie-go {
+  padding:2px 10px; font-size:12px; font-family:Arial;
+  background:#ece9d8; border:1px solid #848484; cursor:pointer;
+}
+.ie-go:hover { background:#dce8ff; }
+
+/* Craigslist typography - accurate to 2006 */
+.cl-wrap { padding:12px 18px 20px 18px; background:#fff; }
+
+.cl-bc {
+  font-family:"Times New Roman",Times,serif;
+  font-style:italic; font-size:15px; margin-bottom:16px; color:#333;
+}
+.cl-bc a { color:#00008b; text-decoration:underline; font-weight:bold; }
+
+.cl-h1 {
+  font-family:Verdana,Geneva,sans-serif;
+  font-size:20px; font-weight:bold; color:#000; margin-bottom:7px;
+}
+
+hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:10px; }
+
+.cl-meta {
+  font-family:Arial,Helvetica,sans-serif; font-size:12px;
+  color:#333; margin-bottom:22px; line-height:1.7;
+}
+.cl-meta a { color:#00008b; text-decoration:none; }
+.cl-meta a:hover { text-decoration:underline; }
+
+.cl-body {
+  font-family:"Times New Roman",Times,serif;
+  font-size:17px; color:#000; line-height:1.9; margin-bottom:28px;
+}
+.cl-body p { margin-bottom:12px; }
+
+.cl-foot {
+  font-family:Arial,Helvetica,sans-serif; font-size:11px;
+  color:#555; line-height:1.8;
+}
+.cl-reply {
+  display:inline-block; margin-top:14px;
+  font-family:Arial,Helvetica,sans-serif; font-size:13px;
+  color:#00008b; text-decoration:underline; cursor:pointer;
+}
+
+/* ===== OUTLOOK EXPRESS INNER ===== */
+.oe-menubar {
+  background:#ece9d8; border-bottom:1px solid #aca899;
+  padding:1px 4px; display:flex; flex-shrink:0;
+}
+.oe-menubar span {
+  padding:2px 8px; font-size:12px; font-family:Arial; cursor:default; color:#000;
+}
+.oe-menubar span:hover { background:#316ac5; color:#fff; }
+
+.oe-toolbar {
+  background:#ece9d8; border-bottom:1px solid #aca899;
+  padding:2px 4px; display:flex; align-items:center; gap:2px; flex-shrink:0;
+}
+.oe-btn {
+  display:flex; align-items:center; gap:3px;
+  padding:2px 6px; font-size:11px; font-family:Arial;
+  background:#ece9d8; border:1px solid transparent;
+  cursor:pointer; border-radius:2px; color:#000;
+}
+.oe-btn:hover { border-color:#848484; background:#dce8ff; }
+.oe-sep { width:1px; height:20px; background:#aca899; margin:0 2px; }
+.oe-ib {
+  width:24px; height:22px;
+  background:#ece9d8; border:1px solid transparent;
+  cursor:pointer; font-size:13px;
+  display:flex; align-items:center; justify-content:center; border-radius:2px;
+}
+.oe-ib:hover { border-color:#848484; background:#dce8ff; }
+
+.oe-hdrs { background:#ece9d8; border-bottom:2px solid #aca899; flex-shrink:0; }
+.oe-row {
+  display:flex; align-items:center;
+  border-bottom:1px solid #c8c5ba; height:25px;
+}
+.oe-lbl {
+  font-family:Arial; font-size:12px; font-weight:bold;
+  text-decoration:underline; padding:0 6px;
+  min-width:64px; text-align:right; color:#000; cursor:pointer;
+}
+.oe-inp {
+  flex:1; border:none; outline:none; background:#fff;
+  font-size:12px; font-family:Arial; padding:0 4px; height:100%;
+  border-left:1px solid #c8c5ba;
+}
+
+.oe-fmtbar {
+  background:#ece9d8; border-bottom:1px solid #aca899;
+  padding:2px 4px; display:flex; align-items:center; gap:2px; flex-shrink:0;
+}
+.oe-fsel {
+  height:20px; font-size:11px; border:1px solid #848484;
+  background:#fff; font-family:Arial; padding:0 2px; width:110px;
+}
+.oe-fb {
+  width:22px; height:20px;
+  background:#ece9d8; border:1px solid transparent;
+  font-size:12px; font-family:Arial;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; border-radius:2px;
+}
+.oe-fb:hover { border-color:#848484; background:#dce8ff; }
+.oe-fsep { width:1px; height:16px; background:#aca899; margin:0 2px; }
+
+.oe-compose {
+  flex:1; padding:10px 14px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:15px; font-weight:bold; color:#000;
+  background:#fff; overflow:auto;
+}
+
+/* ===== TASKBAR ===== */
+#taskbar {
+  position:fixed; bottom:0; left:0; right:0; height:28px; z-index:9999;
+  background:linear-gradient(to bottom,#2462d4 0%,#1952c0 4%,#1a55c8 6%,#1650c0 50%,#1248b8 95%,#0e40a8 100%);
+  display:flex; align-items:center; padding:0 2px; gap:2px;
+  box-shadow:0 -1px 0 rgba(255,255,255,0.4) inset;
+}
+.start-btn {
+  height:24px; border-radius:12px; cursor:pointer;
+  background:linear-gradient(to bottom,#57a832,#3d8a1e 50%,#2d7010);
+  border:1px solid #235010; color:#fff;
+  font-size:13px; font-weight:bold;
+  font-family:"Franklin Gothic Medium",Arial,sans-serif;
+  padding:0 12px 0 8px;
+  display:flex; align-items:center; gap:4px;
+  box-shadow:0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  letter-spacing:0.5px;
+}
+.start-btn::before { content:"⊞"; font-size:16px; }
+.tb-sep { width:1px; height:20px; background:rgba(255,255,255,0.2); margin:0 2px; }
+.tb-btn {
+  height:22px; min-width:140px; max-width:190px;
+  background:linear-gradient(to bottom,#2060d0,#1850b8);
+  border:1px solid #1040a0; color:#fff;
+  font-size:11px; font-family:Arial; padding:0 8px;
+  cursor:pointer; display:flex; align-items:center; gap:4px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.tb-btn.active {
+  background:linear-gradient(to bottom,#1448a8,#1858c0);
+  box-shadow:inset 1px 1px 3px rgba(0,0,0,0.4); border-color:#0e38a0;
+}
+.tb-btn:hover { background:linear-gradient(to bottom,#2868d8,#1a58c8); }
+.tb-clock {
+  margin-left:auto; color:#fff; font-size:11px; font-family:Arial;
+  padding:0 10px; height:100%; display:flex; align-items:center;
+  background:rgba(0,0,0,0.15);
+}
+</style>
+</head>
+<body>
+
+<!-- XP Desktop sidebar -->
+<div class="xp-sidebar">
+  <div class="sb-grid">
+    <div class="p"></div><div class="d"></div><div class="p"></div><div class="d"></div>
+    <div class="d"></div><div class="p"></div><div class="d"></div><div class="p"></div>
+    <div class="p"></div><div class="d"></div><div class="p"></div><div class="d"></div>
+    <div class="d"></div><div class="p"></div><div class="d"></div><div class="p"></div>
+  </div>
+  <div class="sb-grid" style="margin-top:2px;">
+    <div class="d"></div><div class="p"></div><div class="d"></div><div class="p"></div>
+    <div class="p"></div><div class="d"></div><div class="p"></div><div class="d"></div>
+    <div class="d"></div><div class="p"></div><div class="d"></div><div class="p"></div>
+    <div class="p"></div><div class="d"></div><div class="p"></div><div class="d"></div>
+  </div>
+  <div class="sb-label">Online</div>
+  <div class="sb-pro">pro</div>
+</div>
+
+<!-- ===== IE WINDOW ===== -->
+<div class="xp-win" id="ie-win" style="width:820px;height:600px;top:25px;left:100px;z-index:10;">
+  <div class="xp-tb" id="ie-tb">
+    <span class="xp-tb-icon">🌐</span>
+    <span class="xp-tb-title">miami &gt; missed connections - craigslist - Microsoft Internet Explorer</span>
+    <div class="xp-tb-btns">
+      <div class="xp-wb mn" onclick="minWin('ie-win','ie-task')">&#8212;</div>
+      <div class="xp-wb mx">▭</div>
+      <div class="xp-wb cl" onclick="closeWin('ie-win','ie-task')">✕</div>
+    </div>
+  </div>
+  <div class="ie-menubar">
+    <span>File</span><span>Edit</span><span>View</span>
+    <span>Favorites</span><span>Tools</span><span>Help</span>
+  </div>
+  <div class="ie-nav">
+    <div class="ie-nb">◀ Back</div>
+    <div class="ie-nb dis">Forward ▶</div>
+    <div class="ie-sep"></div>
+    <div class="ie-nb">↻ Refresh</div>
+    <div class="ie-nb">🏠 Home</div>
+    <div class="ie-sep"></div>
+    <div class="ie-nb">⭐ Favorites</div>
+    <div class="ie-nb">📰 History</div>
+    <div class="ie-sep"></div>
+    <div class="ie-nb">✉ Mail ▾</div>
+    <div class="ie-nb">🖨 Print</div>
+  </div>
+  <div class="ie-addr">
+    <span class="ie-al">Address</span>
+    <input class="ie-ai" type="text" value="http://miami.craigslist.org/mis/323659878.html" readonly>
+    <button class="ie-go">Go</button>
+  </div>
+  <div class="xp-body">
+    <div class="cl-wrap">
+      <div class="cl-bc">
+        <a href="#">miami</a> &gt; <a href="#">missed connections</a>
+      </div>
+      <div class="cl-h1">frozen barbie looking for ken</div>
+      <hr class="cl-hr">
+      <div class="cl-meta">
+        <strong>Reply to:</strong> <a href="#">frozenbarbie@hotmail.web</a><br>
+        <strong>Date:</strong> 2006-11-25, 8:27PM ET
+      </div>
+      <div class="cl-body">
+        <p>Dear Ken,</p>
+        <p>I'm in pieces. Why the cold shoulder?</p>
+        <p>Love,<br>Barbie</p>
+      </div>
+      <hr class="cl-hr">
+      <div class="cl-foot">
+        <div>this is in or around miami, fl</div>
+        <div>no-- it's NOT ok to contact this poster with services or other commercial interests</div>
+        <div style="margin-top:3px;color:#333;">323659878</div>
+      </div>
+      <span class="cl-reply" onclick="openOE()">Reply to this post</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OUTLOOK EXPRESS WINDOW ===== -->
+<div class="xp-win" id="oe-win" style="width:650px;height:400px;top:140px;left:260px;z-index:20;display:none;">
+  <div class="xp-tb" id="oe-tb">
+    <span class="xp-tb-icon">✉</span>
+    <span class="xp-tb-title">New Message</span>
+    <div class="xp-tb-btns">
+      <div class="xp-wb mn" onclick="minWin('oe-win','oe-task')">&#8212;</div>
+      <div class="xp-wb mx">▭</div>
+      <div class="xp-wb cl" onclick="closeWin('oe-win','oe-task')">✕</div>
+    </div>
+  </div>
+  <div class="oe-menubar">
+    <span>File</span><span>Edit</span><span>View</span><span>Insert</span>
+    <span>Format</span><span>Tools</span><span>Message</span><span>Help</span>
+  </div>
+  <div class="oe-toolbar">
+    <div class="oe-btn" style="font-weight:bold;">📤 Send</div>
+    <div class="oe-sep"></div>
+    <div class="oe-ib" title="Cut">✂</div>
+    <div class="oe-ib" title="Copy">⎘</div>
+    <div class="oe-ib" title="Paste">📋</div>
+    <div class="oe-ib" title="Undo">↩</div>
+    <div class="oe-sep"></div>
+    <div class="oe-ib" title="Spelling" style="font-size:9px;font-weight:bold;line-height:1.1;text-align:center;">ABC<br>✓</div>
+    <div class="oe-ib" title="Attach">📎</div>
+    <div class="oe-ib" title="Sign">✍</div>
+    <div class="oe-sep"></div>
+    <div class="oe-ib" title="Priority" style="color:red;font-weight:bold;font-size:14px;">!</div>
+  </div>
+  <div class="oe-hdrs">
+    <div class="oe-row">
+      <span class="oe-lbl">To:</span>
+      <input class="oe-inp" type="text" value="frozenbarbie@hotmail.com">
+    </div>
+    <div class="oe-row">
+      <span class="oe-lbl">Subject:</span>
+      <input class="oe-inp" type="text" value="">
+    </div>
+  </div>
+  <div class="oe-fmtbar">
+    <select class="oe-fsel"><option>Arial</option><option>Times New Roman</option><option>Verdana</option><option>Courier New</option></select>
+    <div class="oe-fsep"></div>
+    <div class="oe-fb" title="Bullets">≡</div>
+    <div class="oe-fb" title="Numbered" style="font-size:9px;">1.</div>
+    <div class="oe-fb" title="Indent">⇥</div>
+    <div class="oe-fb" title="Outdent">⇤</div>
+    <div class="oe-fb" title="Align">▤</div>
+    <div class="oe-fsep"></div>
+    <div class="oe-fb" style="font-size:15px;font-weight:bold;">A</div>
+    <div class="oe-fb" style="font-size:10px;font-weight:bold;">A</div>
+    <div class="oe-fsep"></div>
+    <div class="oe-fb">🖼</div>
+    <div class="oe-fb">⊞</div>
+    <div class="oe-fb">▬</div>
+    <div class="oe-fb">🔗</div>
+  </div>
+  <div class="oe-compose">
+    Barbie, Be patient.&nbsp; One day we'll share a cold one.
+  </div>
+</div>
+
+<!-- ===== TASKBAR ===== -->
+<div id="taskbar">
+  <button class="start-btn">start</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn active" id="ie-task" onclick="restoreWin('ie-win','ie-task')">
+    🌐 miami > missed connections - Mi...
+  </button>
+  <button class="tb-btn" id="oe-task" style="display:none;" onclick="restoreWin('oe-win','oe-task')">
+    ✉ New Message
+  </button>
+  <div class="tb-clock" id="clock">8:27 PM</div>
+</div>
+
+<script>
+let zTop = 10;
+function topZ() { return ++zTop; }
+
+// Dragging
+function makeDraggable(win, tb) {
+  let active = false, ox = 0, oy = 0;
+  tb.addEventListener('mousedown', e => {
+    if (e.target.closest('.xp-tb-btns')) return;
+    active = true;
+    ox = e.clientX - win.offsetLeft;
+    oy = e.clientY - win.offsetTop;
+    win.style.zIndex = topZ();
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!active) return;
+    let x = Math.max(0, Math.min(window.innerWidth - win.offsetWidth, e.clientX - ox));
+    let y = Math.max(0, Math.min(window.innerHeight - 28 - win.offsetHeight, e.clientY - oy));
+    win.style.left = x + 'px';
+    win.style.top = y + 'px';
+  });
+  document.addEventListener('mouseup', () => { active = false; });
+}
+
+makeDraggable(document.getElementById('ie-win'), document.getElementById('ie-tb'));
+makeDraggable(document.getElementById('oe-win'), document.getElementById('oe-tb'));
+
+// Bring to front on click
+['ie-win','oe-win'].forEach(id => {
+  document.getElementById(id).addEventListener('mousedown', function() {
+    this.style.zIndex = topZ();
+  });
+});
+
+function closeWin(winId, taskId) {
+  document.getElementById(winId).style.display = 'none';
+  document.getElementById(taskId).style.display = 'none';
+}
+
+function minWin(winId, taskId) {
+  document.getElementById(winId).style.display = 'none';
+  document.getElementById(taskId).classList.remove('active');
+}
+
+function restoreWin(winId, taskId) {
+  const w = document.getElementById(winId);
+  w.style.display = 'flex';
+  w.style.zIndex = topZ();
+  document.getElementById(taskId).classList.add('active');
+}
+
+function openOE() {
+  restoreWin('oe-win', 'oe-task');
+  document.getElementById('oe-task').style.display = 'flex';
+}
+
+window.onload = function() {
+  // Scene starts with OE open
+  openOE();
+
+  // Live clock
+  function tick() {
+    const d = new Date();
+    let h = d.getHours(), m = d.getMinutes();
+    const ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('clock').textContent = h + ':' + String(m).padStart(2,'0') + ' ' + ap;
+  }
+  tick();
+  setInterval(tick, 30000);
+};
+</script>
+</body>
+</html>
