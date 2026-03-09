@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dexter - Craigslist Scene</title>
+<title>Dexter - Desktop</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -17,55 +17,53 @@ body {
 }
 
 /* ============================================================
-   DESKTOP ICON  (draggable)
+   DESKTOP ICONS
    ============================================================ */
-#barbie-icon {
+.desk-icon {
   position:absolute;
-  left:20px; top:20px;
-  width:80px;
+  width:82px;
   display:flex; flex-direction:column; align-items:center;
-  gap:4px; padding:4px; border-radius:3px;
-  cursor:default;
-  z-index:5;
+  gap:4px; padding:5px 4px; border-radius:3px;
+  cursor:default; z-index:5;
 }
-#barbie-icon:hover   { background:rgba(255,255,255,0.15); }
-#barbie-icon.sel     { background:rgba(49,106,197,0.65); outline:1px dotted rgba(255,255,255,0.8); }
+.desk-icon:hover { background:rgba(255,255,255,0.15); }
+.desk-icon.sel   { background:rgba(49,106,197,0.65); outline:1px dotted rgba(255,255,255,0.8); }
 
-.icon-thumb {
-  width:64px; height:48px;
+/* Generic icon image area */
+.di-img {
+  width:48px; height:48px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:38px; line-height:1;
+  filter:drop-shadow(1px 2px 3px rgba(0,0,0,0.7));
+  position:relative;
+}
+
+/* Video file icon — film-strip style */
+.di-vid-thumb {
+  width:56px; height:44px;
   background:#111;
-  border:2px solid rgba(255,255,255,0.5);
+  border:2px solid rgba(255,255,255,0.45);
   border-radius:2px;
   overflow:hidden;
   display:flex; align-items:center; justify-content:center;
   position:relative;
+  flex-shrink:0;
 }
-/* Film-strip notches top & bottom */
-.icon-thumb::before, .icon-thumb::after {
+.di-vid-thumb::before, .di-vid-thumb::after {
   content:'';
-  position:absolute; left:0; right:0; height:6px;
-  background:repeating-linear-gradient(90deg,#000 0,#000 4px,#222 4px,#222 8px);
-  z-index:1;
+  position:absolute; left:0; right:0; height:5px;
+  background:repeating-linear-gradient(90deg,#000 0,#000 4px,#1a1a1a 4px,#1a1a1a 8px);
+  z-index:2;
 }
-.icon-thumb::before { top:0; }
-.icon-thumb::after  { bottom:0; }
+.di-vid-thumb::before { top:0; }
+.di-vid-thumb::after  { bottom:0; }
+.di-vid-thumb canvas { width:100%; height:100%; display:block; object-fit:cover; }
+.di-vid-thumb .di-fallback { font-size:20px; color:#aaa; z-index:1; }
 
-#icon-canvas {
-  width:100%; height:100%;
-  object-fit:cover;
-  display:block;
-}
-
-/* fallback if video not loaded yet */
-.icon-thumb-placeholder {
-  font-size:22px; color:#aaa; z-index:2; position:relative;
-}
-
-.icon-label {
-  color:#fff;
-  font-size:11px; font-family:Arial;
+.di-label {
+  color:#fff; font-size:11px; font-family:Arial;
   text-align:center;
-  text-shadow:1px 1px 2px rgba(0,0,0,0.95), 0 0 4px rgba(0,0,0,0.8);
+  text-shadow:1px 1px 2px rgba(0,0,0,0.95), 0 0 5px rgba(0,0,0,0.8);
   line-height:1.3; word-break:break-word; width:100%;
 }
 
@@ -75,12 +73,10 @@ body {
 .xp-win {
   position:absolute;
   display:flex; flex-direction:column;
-  box-shadow:2px 2px 12px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.15);
+  box-shadow:2px 2px 14px rgba(0,0,0,0.7);
   border:1px solid #08288a;
-  min-width:200px; min-height:80px;
+  min-width:160px; min-height:60px;
 }
-
-/* Title bar */
 .xp-tb {
   height:28px; flex-shrink:0;
   background:linear-gradient(to right,#082888 0%,#1a55d8 25%,#3068e0 50%,#1a55d8 75%,#082888 100%);
@@ -99,8 +95,7 @@ body {
   width:21px; height:21px; border-radius:3px;
   display:flex; align-items:center; justify-content:center;
   font-size:11px; font-weight:bold; color:#fff;
-  border:1px solid rgba(0,0,0,0.35);
-  cursor:pointer;
+  border:1px solid rgba(0,0,0,0.35); cursor:pointer;
   text-shadow:0 1px 1px rgba(0,0,0,0.6);
 }
 .xwb.mn { background:linear-gradient(to bottom,#62aaee,#3a72ce); }
@@ -113,6 +108,76 @@ body {
 .xp-body { flex:1; overflow:auto; background:#fff; display:flex; flex-direction:column; }
 
 /* ============================================================
+   FOLDER WINDOW (Windows Explorer style)
+   ============================================================ */
+.folder-toolbar {
+  background:#ece9d8; border-bottom:1px solid #aca899;
+  padding:2px 4px; display:flex; align-items:center; gap:2px; flex-shrink:0;
+}
+.folder-btn {
+  padding:2px 8px; font-size:11px; font-family:Arial;
+  background:#ece9d8; border:1px solid transparent;
+  cursor:pointer; color:#000; border-radius:2px;
+  display:flex; align-items:center; gap:3px;
+}
+.folder-btn:hover { border-color:#848484; background:#dce8ff; }
+.folder-btn.dim { color:#bbb; cursor:default; }
+.folder-btn.dim:hover { border-color:transparent; background:#ece9d8; }
+.folder-sep { width:1px; height:20px; background:#aca899; margin:0 2px; }
+
+.folder-addr {
+  background:#ece9d8; border-bottom:2px solid #aca899;
+  padding:2px 4px; display:flex; align-items:center; gap:4px; flex-shrink:0;
+}
+.folder-albl { font-size:12px; font-family:Arial; color:#000; }
+.folder-ainp {
+  flex:1; height:22px; border:2px inset #999;
+  background:#fff; padding:0 4px;
+  font-size:12px; font-family:Arial; outline:none; color:#000;
+}
+
+.folder-body {
+  flex:1; background:#fff;
+  display:flex; flex-wrap:wrap;
+  align-content:flex-start;
+  padding:12px; gap:8px;
+  overflow:auto;
+}
+
+/* File items inside folder */
+.folder-file {
+  width:76px; height:88px;
+  display:flex; flex-direction:column; align-items:center;
+  gap:4px; padding:4px; border-radius:2px; cursor:default;
+}
+.folder-file:hover { background:#dce8ff; outline:1px solid #7dadd9; }
+.folder-file.sel   { background:#316ac5; outline:1px dotted #fff; }
+.folder-file.sel .ff-label { color:#fff; }
+
+.ff-thumb {
+  width:52px; height:40px;
+  background:#111; border:1px solid #888;
+  border-radius:1px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; flex-shrink:0;
+}
+.ff-thumb::before, .ff-thumb::after {
+  content:'';
+  position:absolute; left:0; right:0; height:5px;
+  background:repeating-linear-gradient(90deg,#000 0,#000 3px,#1a1a1a 3px,#1a1a1a 6px);
+  z-index:2;
+}
+.ff-thumb::before { top:0; } .ff-thumb::after { bottom:0; }
+.ff-thumb canvas { width:100%; height:100%; display:block; }
+.ff-thumb .ff-fallback { font-size:18px; color:#aaa; z-index:1; }
+
+.ff-label {
+  color:#000; font-size:11px; font-family:Arial;
+  text-align:center; line-height:1.3;
+  word-break:break-word; width:100%;
+}
+
+/* ============================================================
    IE CHROME
    ============================================================ */
 .ie-menu {
@@ -120,11 +185,9 @@ body {
   padding:1px 2px; display:flex; flex-shrink:0;
 }
 .ie-menu span {
-  padding:2px 8px; font-size:12px; font-family:Arial;
-  cursor:default; color:#000;
+  padding:2px 8px; font-size:12px; font-family:Arial; cursor:default; color:#000;
 }
 .ie-menu span:hover { background:#316ac5; color:#fff; }
-
 .ie-nav {
   background:#ece9d8; border-bottom:1px solid #aca899;
   padding:2px 4px; display:flex; align-items:center; gap:2px; flex-shrink:0;
@@ -139,7 +202,6 @@ body {
 .ie-btn.dim { color:#bbb; cursor:default; }
 .ie-btn.dim:hover { border-color:transparent; background:#ece9d8; }
 .ie-vsep { width:1px; height:20px; background:#aca899; margin:0 2px; }
-
 .ie-addr {
   background:#ece9d8; border-bottom:2px solid #aca899;
   padding:2px 4px; display:flex; align-items:center; gap:4px; flex-shrink:0;
@@ -160,31 +222,26 @@ body {
    CRAIGSLIST CONTENT
    ============================================================ */
 .cl-page { padding:14px 20px 24px 20px; flex:1; }
-
 .cl-bc {
   font-family:"Times New Roman",Times,serif;
   font-style:italic; font-size:15px; margin-bottom:18px; color:#444;
 }
 .cl-bc a { color:#00008b; text-decoration:underline; font-weight:bold; }
-
 .cl-h1 {
   font-family:Verdana,Geneva,sans-serif;
   font-size:20px; font-weight:bold; color:#000; margin-bottom:8px;
 }
 hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
-
 .cl-meta {
   font-family:Arial,Helvetica,sans-serif; font-size:12px;
   color:#333; margin-bottom:24px; line-height:1.8;
 }
 .cl-meta a { color:#00008b; }
-
 .cl-body {
   font-family:"Times New Roman",Times,serif;
   font-size:17px; color:#000; line-height:1.9; margin-bottom:30px;
 }
 .cl-body p { margin-bottom:14px; }
-
 .cl-foot {
   font-family:Arial,Helvetica,sans-serif;
   font-size:11px; color:#555; line-height:1.8;
@@ -196,18 +253,16 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 }
 
 /* ============================================================
-   OUTLOOK EXPRESS CHROME
+   OUTLOOK EXPRESS
    ============================================================ */
 .oe-menu {
   background:#ece9d8; border-bottom:1px solid #aca899;
   padding:1px 2px; display:flex; flex-shrink:0;
 }
 .oe-menu span {
-  padding:2px 8px; font-size:12px; font-family:Arial;
-  cursor:default; color:#000;
+  padding:2px 8px; font-size:12px; font-family:Arial; cursor:default; color:#000;
 }
 .oe-menu span:hover { background:#316ac5; color:#fff; }
-
 .oe-toolbar {
   background:#ece9d8; border-bottom:1px solid #aca899;
   padding:2px 4px; display:flex; align-items:center; gap:2px; flex-shrink:0;
@@ -221,13 +276,11 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 .oe-tbtn:hover { border-color:#848484; background:#dce8ff; }
 .oe-tsep { width:1px; height:20px; background:#aca899; margin:0 2px; }
 .oe-tic {
-  width:24px; height:22px;
-  background:#ece9d8; border:1px solid transparent;
+  width:24px; height:22px; background:#ece9d8; border:1px solid transparent;
   cursor:pointer; font-size:13px;
   display:flex; align-items:center; justify-content:center; border-radius:2px;
 }
 .oe-tic:hover { border-color:#848484; background:#dce8ff; }
-
 .oe-hdrs { background:#ece9d8; border-bottom:2px solid #aca899; flex-shrink:0; }
 .oe-hrow {
   display:flex; align-items:center;
@@ -243,7 +296,6 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   font-size:12px; font-family:Arial; padding:0 5px; height:100%;
   border-left:1px solid #c8c5ba;
 }
-
 .oe-fmt {
   background:#ece9d8; border-bottom:1px solid #aca899;
   padding:2px 4px; display:flex; align-items:center; gap:2px; flex-shrink:0;
@@ -253,14 +305,12 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   background:#fff; font-family:Arial; padding:0 2px; width:110px;
 }
 .oe-fbtn {
-  width:22px; height:20px;
-  background:#ece9d8; border:1px solid transparent;
+  width:22px; height:20px; background:#ece9d8; border:1px solid transparent;
   font-size:12px; font-family:Arial;
   cursor:pointer; display:flex; align-items:center; justify-content:center; border-radius:2px;
 }
 .oe-fbtn:hover { border-color:#848484; background:#dce8ff; }
 .oe-fsp { width:1px; height:16px; background:#aca899; margin:0 2px; }
-
 .oe-body-area {
   flex:1; padding:10px 14px;
   font-family:Arial,Helvetica,sans-serif;
@@ -269,27 +319,21 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 }
 
 /* ============================================================
-   WINDOWS MEDIA PLAYER CHROME
+   WINDOWS MEDIA PLAYER
    ============================================================ */
 .wmp-menu {
   background:#1c1c1c; border-bottom:1px solid #3a3a3a;
   padding:1px 2px; display:flex; flex-shrink:0;
 }
 .wmp-menu span {
-  padding:2px 8px; font-size:11px; font-family:Arial;
-  cursor:default; color:#ccc;
+  padding:2px 8px; font-size:11px; font-family:Arial; cursor:default; color:#ccc;
 }
 .wmp-menu span:hover { background:#3a3a3a; color:#fff; }
-
 .wmp-vid-area {
   flex:1; background:#000;
-  display:flex; align-items:center; justify-content:center;
-  overflow:hidden;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
 }
-.wmp-vid-area video {
-  width:100%; height:100%; object-fit:contain; display:block;
-}
-
+.wmp-vid-area video { width:100%; height:100%; object-fit:contain; display:block; }
 .wmp-controls {
   background:linear-gradient(to bottom,#2c2c2c,#1a1a1a);
   border-top:1px solid #444;
@@ -301,8 +345,7 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 }
 .wmp-seek-fill {
   height:100%; border-radius:3px; width:0%;
-  background:linear-gradient(to right,#1878d4,#44aaee);
-  pointer-events:none;
+  background:linear-gradient(to right,#1878d4,#44aaee); pointer-events:none;
 }
 .wmp-btns { display:flex; align-items:center; gap:3px; }
 .wmp-btn {
@@ -338,11 +381,9 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   box-shadow:0 1px 3px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
 }
 .tb-start::before { content:"⊞"; font-size:17px; }
-
 .tb-div { width:1px; height:20px; background:rgba(255,255,255,0.2); margin:0 3px; }
-
 .tb-btn {
-  height:22px; min-width:150px; max-width:200px;
+  height:22px; min-width:140px; max-width:195px;
   background:linear-gradient(to bottom,#2262d0,#1850b8);
   border:1px solid #1040a0; color:#fff;
   font-size:11px; font-family:Arial; padding:0 9px;
@@ -356,7 +397,6 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   border-color:#0e38a0;
 }
 .tb-btn:hover { background:linear-gradient(to bottom,#2a6ae0,#1c5acc); }
-
 .tb-clock {
   margin-left:auto; color:#fff; font-size:11px; font-family:Arial;
   padding:0 10px; height:100%; display:flex; align-items:center;
@@ -366,23 +406,40 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 </head>
 <body>
 
-<!-- Hidden video for thumbnail generation -->
-<video id="thumb-src" src="Barbie.mp4" muted preload="metadata"
-  style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></video>
+<!-- Hidden video elements for thumbnail generation -->
+<video id="thumb-barbie"       src="Barbie.mp4"          muted preload="metadata" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></video>
+<video id="thumb-trueartistry" src="trueartistry.mp4" muted preload="metadata" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></video>
+<video id="thumb-wires"        src="wires.mp4"        muted preload="metadata" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></video>
+<video id="thumb-sit"          src="sit.mp4"          muted preload="metadata" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></video>
+<video id="thumb-4m"           src="4m.MP4"           muted preload="metadata" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></video>
 
 <!-- ============================================================
-     DESKTOP ICON  (Barbie.mp4)
+     DESKTOP ICONS
      ============================================================ -->
-<div id="barbie-icon">
-  <div class="icon-thumb">
-    <canvas id="icon-canvas" width="64" height="48"></canvas>
-    <div class="icon-thumb-placeholder" id="icon-placeholder">🎬</div>
+
+<!-- Barbie.mp4 icon -->
+<div class="desk-icon" id="icon-barbie" style="left:20px;top:20px;" data-src="Barbie.mp4" data-label="Barbie.mp4">
+  <div class="di-vid-thumb">
+    <canvas id="canvas-barbie" width="52" height="40"></canvas>
+    <div class="di-fallback">🎬</div>
   </div>
-  <div class="icon-label">Barbie.mp4</div>
+  <div class="di-label">Barbie.mp4</div>
+</div>
+
+<!-- edits folder icon -->
+<div class="desk-icon" id="icon-edits" style="left:20px;top:120px;">
+  <div class="di-img">📁</div>
+  <div class="di-label">edits</div>
+</div>
+
+<!-- Craigslist shortcut icon -->
+<div class="desk-icon" id="icon-craigslist" style="left:20px;top:220px;">
+  <div class="di-img">🌐</div>
+  <div class="di-label">Craigslist</div>
 </div>
 
 <!-- ============================================================
-     IE WINDOW
+     IE WINDOW (Craigslist)
      ============================================================ -->
 <div class="xp-win" id="ie-win" style="width:820px;height:590px;top:28px;left:110px;z-index:10;">
   <div class="xp-tb" id="ie-tb">
@@ -418,9 +475,7 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   </div>
   <div class="xp-body">
     <div class="cl-page">
-      <div class="cl-bc">
-        <a href="#">miami</a> &gt; <a href="#">missed connections</a>
-      </div>
+      <div class="cl-bc"><a href="#">miami</a> &gt; <a href="#">missed connections</a></div>
       <div class="cl-h1">frozen barbie looking for ken</div>
       <hr class="cl-hr">
       <div class="cl-meta">
@@ -463,14 +518,10 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   <div class="oe-toolbar">
     <div class="oe-tbtn" style="font-weight:bold;">📤 Send</div>
     <div class="oe-tsep"></div>
-    <div class="oe-tic">✂</div>
-    <div class="oe-tic">⎘</div>
-    <div class="oe-tic">📋</div>
-    <div class="oe-tic">↩</div>
+    <div class="oe-tic">✂</div><div class="oe-tic">⎘</div><div class="oe-tic">📋</div><div class="oe-tic">↩</div>
     <div class="oe-tsep"></div>
     <div class="oe-tic" style="font-size:9px;font-weight:bold;line-height:1;text-align:center;">ABC<br>✓</div>
-    <div class="oe-tic">📎</div>
-    <div class="oe-tic">✍</div>
+    <div class="oe-tic">📎</div><div class="oe-tic">✍</div>
     <div class="oe-tsep"></div>
     <div class="oe-tic" style="color:#c00;font-weight:bold;font-size:14px;">!</div>
   </div>
@@ -487,22 +538,47 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
   <div class="oe-fmt">
     <select class="oe-fsel"><option>Arial</option><option>Times New Roman</option><option>Verdana</option><option>Courier New</option></select>
     <div class="oe-fsp"></div>
-    <div class="oe-fbtn">≡</div>
-    <div class="oe-fbtn" style="font-size:9px;">1.</div>
-    <div class="oe-fbtn">⇥</div>
-    <div class="oe-fbtn">⇤</div>
-    <div class="oe-fbtn">▤</div>
+    <div class="oe-fbtn">≡</div><div class="oe-fbtn" style="font-size:9px;">1.</div>
+    <div class="oe-fbtn">⇥</div><div class="oe-fbtn">⇤</div><div class="oe-fbtn">▤</div>
     <div class="oe-fsp"></div>
     <div class="oe-fbtn" style="font-size:15px;font-weight:bold;">A</div>
     <div class="oe-fbtn" style="font-size:10px;font-weight:bold;">A</div>
     <div class="oe-fsp"></div>
-    <div class="oe-fbtn">🖼</div>
-    <div class="oe-fbtn">⊞</div>
-    <div class="oe-fbtn">▬</div>
-    <div class="oe-fbtn">🔗</div>
+    <div class="oe-fbtn">🖼</div><div class="oe-fbtn">⊞</div><div class="oe-fbtn">▬</div><div class="oe-fbtn">🔗</div>
   </div>
-  <div class="oe-body-area">
-    Barbie, Be patient.&nbsp; One day we'll share a cold one.
+  <div class="oe-body-area">Barbie, Be patient.&nbsp; One day we'll share a cold one.</div>
+</div>
+
+<!-- ============================================================
+     EDITS FOLDER WINDOW
+     ============================================================ -->
+<div class="xp-win" id="edits-win" style="width:520px;height:360px;top:80px;left:160px;z-index:15;display:none;">
+  <div class="xp-tb" id="edits-tb">
+    <span class="xp-tb-icon">📁</span>
+    <span class="xp-tb-title">edits</span>
+    <div class="xp-tb-btns">
+      <div class="xwb mn" onclick="minWin('edits-win','edits-task')">&#8212;</div>
+      <div class="xwb mx">▭</div>
+      <div class="xwb cl" onclick="closeWin('edits-win','edits-task')">✕</div>
+    </div>
+  </div>
+  <div class="folder-toolbar">
+    <div class="folder-btn dim">◀ Back</div>
+    <div class="folder-btn dim">Forward ▶</div>
+    <div class="folder-sep"></div>
+    <div class="folder-btn">⬆ Up</div>
+    <div class="folder-sep"></div>
+    <div class="folder-btn">🔍 Search</div>
+    <div class="folder-btn">📁 Folders</div>
+  </div>
+  <div class="folder-addr">
+    <span class="folder-albl">Address</span>
+    <input class="folder-ainp" type="text" value="C:\Desktop\edits" readonly>
+  </div>
+  <div class="xp-body">
+    <div class="folder-body" id="edits-body">
+      <!-- Files injected by JS -->
+    </div>
   </div>
 </div>
 
@@ -512,20 +588,18 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 <div class="xp-win" id="vid-win" style="width:640px;height:510px;top:55px;left:200px;z-index:30;display:none;">
   <div class="xp-tb" id="vid-tb">
     <span class="xp-tb-icon">▶</span>
-    <span class="xp-tb-title">Barbie.mp4 - Windows Media Player</span>
+    <span class="xp-tb-title" id="vid-title">Windows Media Player</span>
     <div class="xp-tb-btns">
       <div class="xwb mn" onclick="minWin('vid-win','vid-task')">&#8212;</div>
       <div class="xwb mx">▭</div>
-      <div class="xwb cl" onclick="closeWin('vid-win','vid-task')">✕</div>
+      <div class="xwb cl" onclick="closeVidWin()">✕</div>
     </div>
   </div>
   <div class="wmp-menu">
     <span>File</span><span>View</span><span>Play</span><span>Tools</span><span>Help</span>
   </div>
   <div class="wmp-vid-area">
-    <video id="vid-player" src="Barbie.mp4" preload="none">
-      Your browser does not support video.
-    </video>
+    <video id="vid-player" preload="none">Your browser does not support video.</video>
   </div>
   <div class="wmp-controls">
     <div class="wmp-seek" id="wmp-seek">
@@ -552,9 +626,10 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 <div id="taskbar">
   <button class="tb-start">start</button>
   <div class="tb-div"></div>
-  <button class="tb-btn on"  id="ie-task"  onclick="restoreWin('ie-win','ie-task')">🌐 miami &gt; missed connections</button>
-  <button class="tb-btn"     id="oe-task"  onclick="restoreWin('oe-win','oe-task')"  style="display:none;">✉ New Message</button>
-  <button class="tb-btn"     id="vid-task" onclick="restoreWin('vid-win','vid-task')" style="display:none;">▶ Barbie.mp4</button>
+  <button class="tb-btn on"   id="ie-task"    onclick="restoreWin('ie-win','ie-task')">🌐 miami &gt; missed connections</button>
+  <button class="tb-btn"      id="oe-task"    onclick="restoreWin('oe-win','oe-task')"    style="display:none;">✉ New Message</button>
+  <button class="tb-btn"      id="edits-task" onclick="restoreWin('edits-win','edits-task')" style="display:none;">📁 edits</button>
+  <button class="tb-btn"      id="vid-task"   onclick="restoreWin('vid-win','vid-task')"  style="display:none;">▶ Media Player</button>
   <div class="tb-clock" id="tb-clock">8:27 PM</div>
 </div>
 
@@ -562,36 +637,30 @@ hr.cl-hr { border:none; border-top:1px solid #999; margin-bottom:12px; }
 /* ============================================================
    WINDOW MANAGER
    ============================================================ */
-let Z = 50;
+var Z = 50;
 function bringUp(el) { el.style.zIndex = ++Z; }
 
 function makeDraggable(win, titlebar) {
-  let dragging = false, startX, startY, origL, origT;
-
+  var dragging = false, startX, startY, origL, origT;
   titlebar.addEventListener('mousedown', function(e) {
     if (e.target.closest('.xp-tb-btns')) return;
     dragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    origL  = win.offsetLeft;
-    origT  = win.offsetTop;
+    startX = e.clientX; startY = e.clientY;
+    origL = win.offsetLeft; origT = win.offsetTop;
     bringUp(win);
     e.preventDefault();
   });
-
   document.addEventListener('mousemove', function(e) {
     if (!dragging) return;
-    const nx = origL + (e.clientX - startX);
-    const ny = origT + (e.clientY - startY);
+    var nx = origL + (e.clientX - startX);
+    var ny = origT + (e.clientY - startY);
     win.style.left = Math.max(0, Math.min(window.innerWidth  - win.offsetWidth,  nx)) + 'px';
     win.style.top  = Math.max(0, Math.min(window.innerHeight - win.offsetHeight - 30, ny)) + 'px';
   });
-
   document.addEventListener('mouseup', function() { dragging = false; });
 }
 
-// Register all three windows
-['ie','oe','vid'].forEach(function(p) {
+['ie','oe','vid','edits'].forEach(function(p) {
   var w = document.getElementById(p+'-win');
   var t = document.getElementById(p+'-tb');
   if (w && t) {
@@ -621,147 +690,209 @@ function openOE() {
 }
 
 /* ============================================================
-   DESKTOP ICON  (draggable + double-click)
+   VIDEO PLAYER — close window but keep audio playing
    ============================================================ */
-(function() {
-  var icon = document.getElementById('barbie-icon');
-  var dragging = false, moved = false;
-  var startX, startY, origL, origT;
-  var clickTimer = null;
-
-  icon.addEventListener('mousedown', function(e) {
-    dragging = true; moved = false;
-    startX = e.clientX; startY = e.clientY;
-    origL  = icon.offsetLeft;
-    origT  = icon.offsetTop;
-    icon.classList.add('sel');
-    e.preventDefault();
-  });
-
-  document.addEventListener('mousemove', function(e) {
-    if (!dragging) return;
-    var dx = e.clientX - startX, dy = e.clientY - startY;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
-    if (moved) {
-      icon.style.left = Math.max(0, Math.min(window.innerWidth  - icon.offsetWidth,  origL + dx)) + 'px';
-      icon.style.top  = Math.max(0, Math.min(window.innerHeight - icon.offsetHeight - 30, origT + dy)) + 'px';
-    }
-  });
-
-  document.addEventListener('mouseup', function() {
-    dragging = false;
-  });
-
-  // Double-click to open (native dblclick)
-  icon.addEventListener('dblclick', function() {
-    openVideoWin();
-  });
-
-  // Click outside deselects
-  document.addEventListener('mousedown', function(e) {
-    if (!icon.contains(e.target)) icon.classList.remove('sel');
-  });
-})();
-
-function openVideoWin() {
-  document.getElementById('vid-task').style.display = 'flex';
-  restoreWin('vid-win','vid-task');
-  var v = document.getElementById('vid-player');
-  v.load();
-  v.play().catch(function(){});
-}
-
-/* ============================================================
-   VIDEO PLAYER CONTROLS
-   ============================================================ */
-var vid    = document.getElementById('vid-player');
-var fill   = document.getElementById('wmp-fill');
-var timelbl= document.getElementById('wmp-time-lbl');
-var ppBtn  = document.getElementById('pp-btn');
-var seek   = document.getElementById('wmp-seek');
+var vid     = document.getElementById('vid-player');
+var fill    = document.getElementById('wmp-fill');
+var timelbl = document.getElementById('wmp-time-lbl');
+var ppBtn   = document.getElementById('pp-btn');
+var seek    = document.getElementById('wmp-seek');
 
 function fmtTime(s) {
-  s = Math.floor(s || 0);
-  var m = Math.floor(s/60), sec = s % 60;
-  return m + ':' + (sec < 10 ? '0' : '') + sec;
+  s = Math.floor(s||0);
+  var m = Math.floor(s/60), sec = s%60;
+  return m + ':' + (sec<10?'0':'') + sec;
 }
-
 vid.addEventListener('timeupdate', function() {
   if (vid.duration) {
-    fill.style.width = (vid.currentTime / vid.duration * 100) + '%';
-    timelbl.textContent = fmtTime(vid.currentTime) + ' / ' + fmtTime(vid.duration);
+    fill.style.width = (vid.currentTime/vid.duration*100)+'%';
+    timelbl.textContent = fmtTime(vid.currentTime)+' / '+fmtTime(vid.duration);
   }
 });
 vid.addEventListener('play',  function() { ppBtn.textContent = '⏸'; });
 vid.addEventListener('pause', function() { ppBtn.textContent = '▶'; });
-vid.addEventListener('ended', function() { ppBtn.textContent = '▶'; fill.style.width = '100%'; });
-
+vid.addEventListener('ended', function() { ppBtn.textContent = '▶'; fill.style.width='100%'; });
 seek.addEventListener('click', function(e) {
   if (!vid.duration) return;
   var r = seek.getBoundingClientRect();
-  vid.currentTime = ((e.clientX - r.left) / r.width) * vid.duration;
+  vid.currentTime = ((e.clientX-r.left)/r.width)*vid.duration;
 });
 
 function vidToggle() { vid.paused ? vid.play() : vid.pause(); }
 function vidSeek(t)  { vid.currentTime = t; }
-function vidSkip(s)  { vid.currentTime = Math.max(0, vid.currentTime + s); }
+function vidSkip(s)  { vid.currentTime = Math.max(0, vid.currentTime+s); }
 function vidEnd()    { if (vid.duration) vid.currentTime = vid.duration; }
 function vidMute()   {
   vid.muted = !vid.muted;
   document.getElementById('mute-btn').textContent = vid.muted ? '🔇' : '🔊';
 }
 
+// Close video WINDOW but keep audio — only hide the window, don't pause/stop
+function closeVidWin() {
+  document.getElementById('vid-win').style.display = 'none';
+  document.getElementById('vid-task').classList.remove('on');
+  // audio keeps playing — vid element stays in DOM and isn't paused
+}
+
+function openVideoWin(src, label) {
+  var task = document.getElementById('vid-task');
+  // If same src already loaded, just show window
+  if (vid.getAttribute('data-loaded') !== src) {
+    vid.src = src;
+    vid.setAttribute('data-loaded', src);
+    vid.load();
+    vid.play().catch(function(){});
+  }
+  document.getElementById('vid-title').textContent = label + ' - Windows Media Player';
+  task.textContent = '▶ ' + label;
+  task.style.display = 'flex';
+  restoreWin('vid-win','vid-task');
+}
+
 /* ============================================================
-   THUMBNAIL from first frame of video
+   DESKTOP ICONS — draggable, single-click select, double-click open
    ============================================================ */
-(function() {
-  var thumbVid = document.getElementById('thumb-src');
-  var canvas   = document.getElementById('icon-canvas');
-  var ctx      = canvas.getContext('2d');
-  var placeholder = document.getElementById('icon-placeholder');
+function makeDesktopIcon(iconEl, onDblClick) {
+  var dragging = false, moved = false;
+  var startX, startY, origL, origT;
+
+  iconEl.addEventListener('mousedown', function(e) {
+    dragging = true; moved = false;
+    startX = e.clientX; startY = e.clientY;
+    origL = iconEl.offsetLeft; origT = iconEl.offsetTop;
+    // deselect all, select this
+    document.querySelectorAll('.desk-icon').forEach(function(i){ i.classList.remove('sel'); });
+    iconEl.classList.add('sel');
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    var dx = e.clientX-startX, dy = e.clientY-startY;
+    if (Math.abs(dx)>3||Math.abs(dy)>3) moved = true;
+    if (moved) {
+      iconEl.style.left = Math.max(0, Math.min(window.innerWidth-iconEl.offsetWidth,   origL+dx))+'px';
+      iconEl.style.top  = Math.max(0, Math.min(window.innerHeight-iconEl.offsetHeight-30, origT+dy))+'px';
+    }
+  });
+  document.addEventListener('mouseup', function() { dragging = false; });
+
+  iconEl.addEventListener('dblclick', function() {
+    if (!moved) onDblClick();
+  });
+
+  // click outside = deselect
+  document.addEventListener('mousedown', function(e) {
+    if (!iconEl.contains(e.target)) iconEl.classList.remove('sel');
+  });
+}
+
+makeDesktopIcon(document.getElementById('icon-barbie'), function() {
+  openVideoWin('Barbie.mp4','Barbie.mp4');
+});
+
+makeDesktopIcon(document.getElementById('icon-edits'), function() {
+  document.getElementById('edits-task').style.display = 'flex';
+  restoreWin('edits-win','edits-task');
+});
+
+makeDesktopIcon(document.getElementById('icon-craigslist'), function() {
+  document.getElementById('ie-task').style.display = 'flex';
+  restoreWin('ie-win','ie-task');
+});
+
+/* ============================================================
+   EDITS FOLDER — populate file icons, double-click to play
+   ============================================================ */
+var editsFiles = [
+  { name:'trueartistry.mp4', src:'trueartistry.mp4', thumbId:'thumb-trueartistry' },
+  { name:'wires.mp4',        src:'wires.mp4',        thumbId:'thumb-wires'        },
+  { name:'sit.mp4',          src:'sit.mp4',          thumbId:'thumb-sit'          },
+  { name:'4m.MP4',           src:'4m.MP4',           thumbId:'thumb-4m'           }
+];
+
+var editsBody = document.getElementById('edits-body');
+editsFiles.forEach(function(f) {
+  var el = document.createElement('div');
+  el.className = 'folder-file';
+  el.innerHTML =
+    '<div class="ff-thumb">' +
+      '<canvas id="ffcanvas-'+f.thumbId+'" width="52" height="40"></canvas>' +
+      '<div class="ff-fallback">🎬</div>' +
+    '</div>' +
+    '<div class="ff-label">'+f.name+'</div>';
+  editsBody.appendChild(el);
+
+  // select on click
+  el.addEventListener('mousedown', function(e) {
+    editsBody.querySelectorAll('.folder-file').forEach(function(x){ x.classList.remove('sel'); });
+    el.classList.add('sel');
+    e.stopPropagation();
+  });
+  editsBody.addEventListener('mousedown', function(e) {
+    if (e.target === editsBody) {
+      editsBody.querySelectorAll('.folder-file').forEach(function(x){ x.classList.remove('sel'); });
+    }
+  });
+
+  // double-click to play
+  el.addEventListener('dblclick', function() {
+    openVideoWin(f.src, f.name);
+  });
+});
+
+/* ============================================================
+   THUMBNAIL GENERATION
+   ============================================================ */
+function makeThumbnail(videoEl, canvasId, fallbackClass) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var fallback = canvas.parentElement.querySelector(fallbackClass||'.di-fallback, .ff-fallback');
 
   function grab() {
     try {
-      ctx.drawImage(thumbVid, 0, 0, 64, 48);
-      // Check if any pixel was drawn
-      var d = ctx.getImageData(0,0,1,1).data;
-      if (d[3] > 0) {
-        placeholder.style.display = 'none';
+      ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+      var d = ctx.getImageData(0,0,2,2).data;
+      var hasPixels = d[3]>0 || d[7]>0;
+      if (hasPixels) {
         canvas.style.display = 'block';
+        if (fallback) fallback.style.display = 'none';
       }
     } catch(e) {}
   }
 
-  thumbVid.addEventListener('loadeddata', function() {
-    thumbVid.currentTime = 1.5; // seek to 1.5s for a decent frame
+  videoEl.addEventListener('loadeddata', function() {
+    videoEl.currentTime = 1.5;
   });
-  thumbVid.addEventListener('seeked', function() {
+  videoEl.addEventListener('seeked', function() {
     grab();
-    thumbVid.pause();
   });
+  setTimeout(function() { videoEl.currentTime = 0.5; }, 4000);
+}
 
-  // Fallback: try after short delay
-  setTimeout(function() {
-    if (placeholder.style.display !== 'none') {
-      thumbVid.currentTime = 0.5;
-    }
-  }, 3000);
-})();
+// Desktop Barbie icon
+makeThumbnail(document.getElementById('thumb-barbie'), 'canvas-barbie');
+
+// Folder file icons — using the ffcanvas- prefixed IDs
+editsFiles.forEach(function(f) {
+  var tv = document.getElementById(f.thumbId);
+  if (tv) makeThumbnail(tv, 'ffcanvas-'+f.thumbId);
+});
 
 /* ============================================================
    TASKBAR CLOCK
    ============================================================ */
 function updateClock() {
   var d = new Date(), h = d.getHours(), m = d.getMinutes();
-  var ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  document.getElementById('tb-clock').textContent = h + ':' + (m<10?'0':'') + m + ' ' + ap;
+  var ap = h>=12?'PM':'AM';
+  h = h%12||12;
+  document.getElementById('tb-clock').textContent = h+':'+(m<10?'0':'')+m+' '+ap;
 }
 updateClock();
 setInterval(updateClock, 30000);
 
 /* ============================================================
-   STARTUP  — open OE like in the scene
+   STARTUP
    ============================================================ */
 window.addEventListener('load', function() {
   openOE();
